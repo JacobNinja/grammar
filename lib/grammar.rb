@@ -6,8 +6,8 @@ require File.expand_path('../grammar/token', __FILE__)
 
 module Grammar
 
-  def self.parse(rb)
-    #Var.new('foo')
+  def self.process(rb, env)
+    Parser.parse(rb).resolve(env)
   end
 
 end
