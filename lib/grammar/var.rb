@@ -10,6 +10,10 @@ module Grammar
       env[self.token.name]
     end
 
+    def push(var)
+      NestedVar.new(self.token, var)
+    end
+
   end
 
 end

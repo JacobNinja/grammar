@@ -2,6 +2,8 @@ module Grammar
 
   class Function
 
+    attr_reader :token, :args
+
     def initialize(token, args=[])
       @token = token
       @args = args
