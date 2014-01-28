@@ -9,11 +9,11 @@ module Grammar
     end
 
     def on_fcall(token)
-      Function.new(token)
+      Nodes::Function.new(token)
     end
 
     def on_vcall(token)
-      Var.new(token)
+      Nodes::Var.new(token)
     end
 
     def on_method_add_arg(func, args)
@@ -26,7 +26,7 @@ module Grammar
     end
 
     def on_call(var, _, nested_var)
-      NestedVar.new(var.token, nested_var)
+      Nodes::NestedVar.new(var.token, nested_var)
     end
 
     # Arguments
@@ -35,7 +35,7 @@ module Grammar
       args.compact
     end
 
-    def on_args_add_block(args, *)
+    def on_args_add_block(args, *b)
       args
     end
 

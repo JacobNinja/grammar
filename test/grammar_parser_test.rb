@@ -1,5 +1,4 @@
-require 'test/unit'
-require File.expand_path('../../lib/grammar', __FILE__)
+require File.expand_path('../test_helper', __FILE__)
 
 class GrammarParserTest < Test::Unit::TestCase
 
@@ -15,7 +14,7 @@ class GrammarParserTest < Test::Unit::TestCase
     assert_equal Grammar::NestedVar.new(Grammar::Token.new('foo', 1, 0), Grammar::Token.new('bar', 1, 4)), Grammar::Parser.parse('foo.bar')
   end
 
-  test 'function with 1 argument' do
+  test 'FunctionNode with 1 argument' do
     arg = Grammar::Var.new(Grammar::Token.new('bar', 1, 4))
     assert_equal Grammar::Function.new(Grammar::Token.new('foo', 1, 0), [arg]), Grammar::Parser.parse('foo(bar)')
   end
