@@ -17,15 +17,26 @@ module Grammar
     end
 
     def on_method_add_arg(func, args)
-      func.arguments(args)
+      positional = args.first.to_a
+      func.arguments(positional)
     end
 
     def on_ident(token)
       Token.new(token, lineno(), column())
     end
 
+    def on_call(var, _, nested_var)
+      NestedVar.new(var.token, nested_var)
+    end
+
+    # Arguments
+
     def on_arg_paren(*args)
-      []
+      args.compact
+    end
+
+    def on_args_add_block(args, *)
+      args
     end
 
   end

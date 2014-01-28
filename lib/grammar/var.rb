@@ -1,5 +1,5 @@
 module Grammar
 
-  Var = Struct.new(:name)
+  Var = Struct.new(:token)
 
 end
