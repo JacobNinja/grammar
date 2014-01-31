@@ -1,11 +1,15 @@
 require File.expand_path('../test_helper', __FILE__)
 
-class GrammarResolverTest < Test::Unit::TestCase
+class GrammarResolverTest < GrammarTest
 
-  attr_reader :foo, :bar
-  def setup
-    @foo = Grammar::Token.new('foo')
-    @bar = Grammar::Token.new('bar')
+  def assert_result(expected, result)
+    assert_equal expected, result.value
+  end
+
+  test 'missing data' do
+    sut = Grammar::Var.new(foo)
+    env = {}
+    assert_result nil, sut.resolve(env)
   end
 
   test 'variable' do
@@ -13,7 +17,7 @@ class GrammarResolverTest < Test::Unit::TestCase
     env = {
         'foo' => 'bar'
     }
-    assert_equal 'bar', sut.resolve(env)
+    assert_result 'bar', sut.resolve(env)
   end
 
   test 'nested variable' do
@@ -23,7 +27,7 @@ class GrammarResolverTest < Test::Unit::TestCase
             'bar' => 'baz'
         }
     }
-    assert_equal 'baz', sut.resolve(env)
+    assert_result 'baz', sut.resolve(env)
   end
 
   test 'function' do
@@ -31,7 +35,7 @@ class GrammarResolverTest < Test::Unit::TestCase
     env = {
         'foo' => -> { 3 }
     }
-    assert_equal 3, sut.resolve(env)
+    assert_result 3, sut.resolve(env)
   end
 
   test 'function with variable arg' do
@@ -40,18 +44,17 @@ class GrammarResolverTest < Test::Unit::TestCase
         'foo' => -> (a) { a * 10 },
         'bar' => 3
     }
-    assert_equal 30, sut.resolve(env)
+    assert_result 30, sut.resolve(env)
   end
 
   test 'nested function with args' do
-    baz = Grammar::Var.new(Grammar::Token.new('baz'))
-    sut = Grammar::Function.new(foo, [Grammar::Function.new(bar), baz])
+    sut = Grammar::Function.new(foo, [Grammar::Function.new(bar), Grammar::Var.new(baz)])
     env = {
         'foo' => -> (a, b) { a + b },
         'bar' => -> { 5 },
         'baz' => 10
     }
-    assert_equal 15, sut.resolve(env)
+    assert_result 15, sut.resolve(env)
   end
 
   test 'nested function with nested args' do
@@ -66,11 +69,11 @@ class GrammarResolverTest < Test::Unit::TestCase
             'bill' => 3
         }
     }
-    assert_equal 29, sut.resolve(env)
+    assert_result 29, sut.resolve(env)
   end
 
   test 'four nested vars' do
-    sut = Grammar::NestedVar.new(foo, bar, Grammar::Var.new(Grammar::Token.new('baz')), Grammar::Var.new(Grammar::Token.new('fizz')))
+    sut = Grammar::NestedVar.new(foo, bar, Grammar::Var.new(baz), Grammar::Var.new(Grammar::Token.new('fizz')))
     env = {
         'foo' => {
             'bar' => {
@@ -80,7 +83,7 @@ class GrammarResolverTest < Test::Unit::TestCase
             }
         }
     }
-    assert_equal 10, sut.resolve(env)
+    assert_result 10, sut.resolve(env)
   end
 
 end

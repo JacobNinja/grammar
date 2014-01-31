@@ -8,9 +8,13 @@ module Grammar
       @vars = vars
     end
 
-    def resolve(env)
-      @vars.reduce(env) do |e, var|
-        e[var.name]
+    def resolve(env, n=1)
+      value = env[var_names[n - 1]]
+      missing_vars = var_names.take(n) if value.nil?
+      if missing_vars || n >= @vars.length
+        Result.new(value, Missing.vars(missing_vars))
+      else
+        resolve(value, n.next)
       end
     end
 
@@ -20,6 +24,12 @@ module Grammar
 
     def ==(other)
       @vars == other.vars
+    end
+
+    private
+
+    def var_names
+      @vars.map(&:name)
     end
 
   end
