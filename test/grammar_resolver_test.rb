@@ -33,7 +33,9 @@ class GrammarResolverTest < GrammarTest
   test 'function' do
     sut = Grammar::Function.new(foo)
     env = {
-        'foo' => -> { 3 }
+        'functions' => {
+          'foo' => -> { 3 }
+        }
     }
     assert_result 3, sut.resolve(env)
   end
@@ -41,7 +43,7 @@ class GrammarResolverTest < GrammarTest
   test 'function with variable arg' do
     sut = Grammar::Function.new(foo, [Grammar::Var.new(bar)])
     env = {
-        'foo' => -> (a) { a * 10 },
+        'functions' => { 'foo' => -> (a) { a * 10 } },
         'bar' => 3
     }
     assert_result 30, sut.resolve(env)
@@ -50,8 +52,10 @@ class GrammarResolverTest < GrammarTest
   test 'nested function with args' do
     sut = Grammar::Function.new(foo, [Grammar::Function.new(bar), Grammar::Var.new(baz)])
     env = {
-        'foo' => -> (a, b) { a + b },
-        'bar' => -> { 5 },
+        'functions' => {
+          'foo' => -> (a, b) { a + b },
+          'bar' => -> { 5 }
+        },
         'baz' => 10
     }
     assert_result 15, sut.resolve(env)
@@ -62,8 +66,10 @@ class GrammarResolverTest < GrammarTest
     baz = Grammar::Var.new(Grammar::Token.new('baz'))
     sut = Grammar::Function.new(foo, [Grammar::Function.new(bar, [nested_var, baz])])
     env = {
-        'foo' => -> (a) { a - 1 },
-        'bar' => -> (a, b) { a * b },
+        'functions' => {
+          'foo' => -> (a) { a - 1 },
+          'bar' => -> (a, b) { a * b }
+        },
         'baz' => 10,
         'greg' => {
             'bill' => 3

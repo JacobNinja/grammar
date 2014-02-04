@@ -14,7 +14,9 @@ end
 
 puts 'Test 1: missing buzz'
 e = {
-    'subtract' => -> (a, b) { a - b },
+    'functions' => {
+      'subtract' => -> (a, b) { a - b },
+    },
     'foo' => {
         'bar' => {
             'baz' => 60,
@@ -25,7 +27,9 @@ print_results(formula, e)
 
 puts 'Test 2: missing baz and buzz'
 e = {
-    'subtract' => -> (a, b) { a - b },
+    'functions' => {
+      'subtract' => -> (a, b) { a - b },
+    },
     'foo' => {
         'bar' => {}
     }

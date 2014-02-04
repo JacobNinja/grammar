@@ -12,7 +12,7 @@ module Grammar
       value = env[var_names[n - 1]]
       missing_vars = var_names.take(n) if value.nil?
       if missing_vars || n >= @vars.length
-        Result.new(value, Missing.vars(missing_vars))
+        Result.new(-> { value }, Missing.vars(missing_vars))
       else
         resolve(value, n.next)
       end

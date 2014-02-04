@@ -9,7 +9,7 @@ module Grammar
     def resolve(env)
       value = env[self.token.name]
       missing_vars = [self.token.name] if value.nil?
-      Result.new(value, Missing.vars(missing_vars))
+      Result.new(-> { value }, Missing.vars(missing_vars))
     end
 
     def push(var)

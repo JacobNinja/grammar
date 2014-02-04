@@ -18,10 +18,9 @@ module Grammar
     end
 
     def resolve(env)
-      func = env[@token.name]
+      func = lookup(env, @token.name)
       args = @args.map { |arg| arg.resolve(env) }
-      value = maybe_call_function(func, args)
-      Result.new(value, missing(func, args))
+      Result.new(function_proc(func, args), missing(func, args))
     end
 
     def ==(other)
@@ -31,13 +30,19 @@ module Grammar
 
     private
 
-    def maybe_call_function(func, args)
-      func.call(*args.map(&:value)) unless func.nil? || args.any?(&:missing?)
+    def function_proc(func, args)
+      -> do
+        func.call(*args.map(&:value)) unless func.nil? || args.any?(&:missing?)
+      end
     end
 
     def missing(func, args)
       missing_functions = Missing.new(functions: Array(func.nil? ? @token.name : nil))
       args.map(&:missing).reduce(missing_functions, &:merge)
+    end
+
+    def lookup(env, func)
+      (env['functions'] || {})[func]
     end
 
   end

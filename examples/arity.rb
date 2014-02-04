@@ -1,7 +1,9 @@
 require File.expand_path('../../lib/grammar', __FILE__)
 
 env = {
-    'add' => -> (*n) { n.reduce(:+) },
+    'functions' => {
+      'add' => -> (*n) { n.reduce(:+) },
+    },
     'foo' => 1,
     'bar' => 5,
     'baz' => 20
