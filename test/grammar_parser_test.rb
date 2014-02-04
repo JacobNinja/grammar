@@ -7,6 +7,18 @@ class GrammarParserTest < Test::Unit::TestCase
     @foo = Grammar::Token.new('foo', 1, 0)
   end
 
+  def assert_malformed(rb)
+    assert_raise(Grammar::MalformedExpression) do
+      Grammar.process(rb, {})
+    end
+  end
+
+  def assert_syntax_error(rb)
+    assert_raise(Grammar::SyntaxError) do
+      Grammar.process(rb, {})
+    end
+  end
+
   test 'variable' do
     assert_equal Grammar::Var.new(foo), Grammar::Parser.parse('foo')
   end
@@ -30,6 +42,17 @@ class GrammarParserTest < Test::Unit::TestCase
 foo.bar
     .baz.fizz
     RUBY
+  end
+
+  test 'raises MalformedExpression' do
+    assert_malformed 'test * test'
+    assert_malformed '4'
+    assert_malformed '[]'
+  end
+
+  test 'raises SyntaxError' do
+    assert_syntax_error '%##$%@'
+    assert_syntax_error '.*!'
   end
 
 end

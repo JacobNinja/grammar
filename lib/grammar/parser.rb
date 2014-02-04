@@ -4,6 +4,7 @@ module Grammar
 
   class Parser < Ripper::SexpBuilderPP
 
+    # Whole program AST; we only want the first node
     def on_program(program)
       program.first
     end
@@ -37,6 +38,13 @@ module Grammar
 
     def on_args_add_block(args, *b)
       args
+    end
+
+    # Parser error
+
+    def compile_error(msg)
+      # Ripper swallows this. Rethrow in Grammar::process
+      raise Grammar::SyntaxError, msg
     end
 
   end
