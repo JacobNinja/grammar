@@ -28,7 +28,7 @@ module Grammar
       end
     end
 
-    [:nl, :lparen, :rparen, :period, :comma, :paren, :void_stmt].each do |event|
+    [:nl, :lparen, :rparen, :period, :comma, :paren, :void_stmt, :sp].each do |event|
       define_method :"on_#{event}" do |*|
         []
       end

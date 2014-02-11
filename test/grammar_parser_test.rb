@@ -1,11 +1,6 @@
 require File.expand_path('../test_helper', __FILE__)
 
-class GrammarParserTest < Test::Unit::TestCase
-
-  attr_reader :foo
-  def setup
-    @foo = Grammar::Token.new('foo', 1, 0)
-  end
+class GrammarParserTest < GrammarTest
 
   def assert_malformed(rb)
     assert_raise(Grammar::MalformedExpression) do
@@ -34,6 +29,12 @@ class GrammarParserTest < Test::Unit::TestCase
   test 'function with 1 argument' do
     arg = Grammar::Var.new(Grammar::Token.new('bar', 1, 4))
     assert_equal Grammar::Function.new(foo, [arg]), Grammar::Parser.parse('foo(bar)')
+  end
+
+  test 'function with 2 arguments' do
+    bar = Grammar::Var.new(Grammar::Token.new('bar', 1, 4))
+    baz = Grammar::Var.new(Grammar::Token.new('baz', 1, 9))
+    assert_equal Grammar::Function.new(foo, [bar, baz]), Grammar::Parser.parse('foo(bar, baz)')
   end
 
   test '4 nested var' do

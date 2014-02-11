@@ -4,7 +4,7 @@ module Grammar
 
     attr_reader :line
 
-    def initialize(name, line=nil, column=nil)
+    def initialize(name, line=0, column=0)
       @name = name
       @line = line
       @column = column
