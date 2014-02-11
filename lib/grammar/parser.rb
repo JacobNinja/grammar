@@ -2,7 +2,37 @@ require 'ripper'
 
 module Grammar
 
-  class Parser < Ripper::SexpBuilderPP
+  class Parser < Ripper
+
+    PARSER_EVENT_TABLE.each do |event, arity|
+      if /_new\z/ =~ event.to_s and arity == 0
+        define_method :"on_#{event}" do
+          []
+        end
+      elsif /_add\z/ =~ event.to_s
+        define_method :"on_#{event}" do |list, item|
+          list.tap do |l|
+            l << item
+          end
+        end
+      else
+        define_method :"on_#{event}" do |*args|
+          raise MalformedExpression
+        end
+      end
+    end
+
+    SCANNER_EVENTS.each do |event|
+      define_method :"on_#{event}" do |*|
+        raise MalformedExpression
+      end
+    end
+
+    [:nl, :lparen, :rparen, :period, :comma, :paren, :void_stmt].each do |event|
+      define_method :"on_#{event}" do |*|
+        []
+      end
+    end
 
     # Whole program AST; we only want the first node
     def on_program(program)
@@ -42,9 +72,12 @@ module Grammar
 
     # Parser error
 
-    def compile_error(msg)
-      # Ripper swallows this. Rethrow in Grammar::process
-      raise Grammar::SyntaxError, msg
+    def on_parse_error(*)
+      raise SyntaxError
+    end
+
+    def compile_error(*)
+      raise SyntaxError
     end
 
   end

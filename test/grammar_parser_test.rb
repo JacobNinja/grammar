@@ -51,8 +51,8 @@ foo.bar
   end
 
   test 'raises SyntaxError' do
-    assert_syntax_error '%##$%@'
-    assert_syntax_error '.*!'
+    assert_syntax_error ',(%##%@'
+    assert_syntax_error '(()'
   end
 
 end

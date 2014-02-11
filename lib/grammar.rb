@@ -8,20 +8,11 @@ require File.expand_path('../grammar/result', __FILE__)
 
 module Grammar
 
-  MalformedExpression = Class.new(StandardError)
-  SyntaxError = Class.new(StandardError)
+  MalformedExpression = Class.new(Exception)
+  SyntaxError = Class.new(Exception)
 
   def self.process(rb, env)
-    raise_conditions { Parser.parse(rb) }.resolve(env)
-  end
-
-  private
-
-  def self.raise_conditions(&block)
-    block.call.tap do |ast|
-      raise SyntaxError if ast.nil?
-      raise MalformedExpression unless ast.respond_to?(:resolve)
-    end
+    Parser.parse(rb).resolve(env)
   end
 
 end
